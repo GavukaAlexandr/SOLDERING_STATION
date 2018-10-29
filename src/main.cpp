@@ -63,7 +63,7 @@ void loop()
 
     print(temperature1, 1);
     print(temperature2, 2);
-    // print(10, 3);
+    print(ctrlFan, 3);
 
     if (buttonState == 1)
     {
@@ -90,7 +90,14 @@ void loop()
 
     else if (buttonState == 3)
     {
-        /* code */
+        oldPosition = ctrlFan;
+        myEnc.write(ctrlFan);
+
+        while (buttonState == 3)
+        {
+            ctrlFan = encCtrl(100);
+            print(ctrlFan, 3);
+        }
     }
 
     // print(newPosition, 3);
