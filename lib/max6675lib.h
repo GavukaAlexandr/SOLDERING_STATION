@@ -1,2 +1,3 @@
 void max6675Init(void);
-int getByCelsius(void);
+double getByCelsius1(void);
+double getByCelsius2(void);

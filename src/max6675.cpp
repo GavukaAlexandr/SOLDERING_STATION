@@ -2,18 +2,25 @@
 #include <SPI.h>
 #include <max6675.h>
 
-int thermoDO1 = 4;
+int thermoDO = 4;
+int thermoCLK = 6;
 int thermoCS1 = 5;
-int thermoCLK1 = 6;
+int thermoCS2 = 8;
 
-MAX6675 thermocouple;
+MAX6675 thermocouple11;
+MAX6675 thermocouple12;
 
 void max6675Init()
 {
     
-    thermocouple.begin(thermoCLK1, thermoCS1, thermoDO1);
+    thermocouple11.begin(thermoCLK, thermoCS1, thermoDO);
+    thermocouple12.begin(thermoCLK, thermoCS2, thermoDO);
 }
 
-int getByCelsius(){
-    return (int)thermocouple.readCelsius();
+double getByCelsius1(){
+    return thermocouple11.readCelsius();
+}
+
+double getByCelsius2(){
+    return thermocouple12.readCelsius();
 }

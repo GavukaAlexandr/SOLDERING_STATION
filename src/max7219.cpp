@@ -17,7 +17,7 @@ unsigned long delaytime = 250;
 
 void max7219Init()
 {
-     /*
+    /*
    The MAX72XX is in power-saving mode on startup,
    we have to do a wakeup call
    */
@@ -28,28 +28,55 @@ void max7219Init()
     lc.clearDisplay(0);
 }
 
-void printLCD1(int data)
+void prepareDigits(int data)
 {
-    digitBuffer[3] = int(data) / 1000;
+    // digitBuffer[3] = int(data) / 1000;
     digitBuffer[2] = (int(data) % 1000) / 100;
     digitBuffer[1] = (int(data) % 100) / 10;
     digitBuffer[0] = (int(data) % 100) % 10;
-
-    for (size_t i = 0; i < 4; i++)
-    {
-        lc.setDigit(0, i + 4, digitBuffer[i], false);
-    }
 }
 
-void printLCD2(int data)
-{
-    digitBuffer[3] = int(data) / 1000;
-    digitBuffer[2] = (int(data) % 1000) / 100;
-    digitBuffer[1] = (int(data) % 100) / 10;
-    digitBuffer[0] = (int(data) % 100) % 10;
+#define CLEAR_INTERVAL 1000
+unsigned long time_now_clear = 0;
 
-    for (size_t i = 0; i < 4; i++)
+/**
+ * @data = int for print to LCD
+ * @lcdType = part LCD 1, 2 or 3
+ * 1 = xxx*****
+ * 2 = ***xxx**
+ * 3 = ******xx
+*/
+void print(int data, int lcdType, bool blink)
+{
+    prepareDigits(data);
+
+    if (blink)
     {
-        lc.setDigit(0, i, digitBuffer[i], false);
+        lc.clearDisplay(0);
+        delay(500);
+    }
+
+    if (millis() > time_now_clear + CLEAR_INTERVAL)
+    {
+        time_now_clear = millis();
+        lc.clearDisplay(0);
+    }
+
+    if (lcdType == 1)
+        lcdType = 5;
+    if (lcdType == 2)
+        lcdType = 2;
+    if (lcdType == 3)
+        lcdType = 0;
+
+    int digitCounts = 1;
+    if (data > 9)
+        digitCounts = 2;
+    if (data > 100)
+        digitCounts = 3;
+
+    for (size_t i = 0; i < digitCounts; i++)
+    {
+        lc.setDigit(0, i + lcdType, digitBuffer[i], false);
     }
 }
