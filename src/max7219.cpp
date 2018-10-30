@@ -72,7 +72,7 @@ void print(int data, int lcdType, bool blink)
     int digitCounts = 1;
     if (data > 9)
         digitCounts = 2;
-    if (data > 100)
+    if (data > 99)
         digitCounts = 3;
 
     for (size_t i = 0; i < digitCounts; i++)
