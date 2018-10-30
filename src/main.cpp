@@ -42,8 +42,8 @@ void setup()
     pinMode(buttonPin, INPUT_PULLUP);
     attachInterrupt(digitalPinToInterrupt(buttonPin), button, FALLING);
     Timer1.initialize(34); // 40 us = 25 kHz
-    pinMode(tempBtnOn1, INPUT_PULLUP);
-    pinMode(tempBtnOn2, INPUT_PULLUP);
+    pinMode(tempBtnOnPin1, INPUT_PULLUP);
+    pinMode(tempBtnOnPin1, INPUT_PULLUP);
     pinMode(powerPin1,  OUTPUT);
     pinMode(powerPin2,  OUTPUT);
 }
@@ -67,8 +67,8 @@ void loop()
     /**
      * GET BUTTONS STATE
     */
-    tempBtnOnState1 = digitalRead(tempBtnOn1);
-    tempBtnOnState2 = digitalRead(tempBtnOn2);
+    tempBtnOnState1 = digitalRead(tempBtnOnPin1);
+    tempBtnOnState2 = digitalRead(tempBtnOnPin2);
     /**
      * GET TEMPERATURE BY INTERVAL
     */
@@ -100,10 +100,10 @@ void loop()
     }
     //if soldering Hairdryer ON
     else if(tempBtnOnState2){
-        if(temperature2 < ctrlTemp2) digitalWrite(powerPin2, HIGH) //on
-        if(temperature2 > ctrlTemp2) digitalWrite(powerPin2, LOW) //of
+        if(temperature2 < ctrlTemp2) digitalWrite(powerPin2, HIGH); //on
+        if(temperature2 > ctrlTemp2) digitalWrite(powerPin2, LOW); //of
         if(temperature2 > 510){
-            digitalWrite(powerPin2, LOW) //off
+            digitalWrite(powerPin2, LOW); //off
             ctrlFan = 100;
         }
     }
