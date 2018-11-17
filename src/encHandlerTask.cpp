@@ -54,7 +54,8 @@ int encCtrl(int limit)
 void stateHandler(
     SemaphoreHandle_t *xCtrlParamMutex,
     int *ctrlTempParam,
-    int thisState)
+    int thisState,
+    int *limit)
 {
     xSemaphoreGive(xEncButtonMutex);
     xSemaphoreTake(*xCtrlParamMutex, (TickType_t)10);
@@ -65,7 +66,7 @@ void stateHandler(
     while (encButtonState == thisState)
     {
         xSemaphoreTake(*xCtrlParamMutex, (TickType_t)10);
-        *ctrlTempParam = encCtrl(500);
+        *ctrlTempParam = encCtrl(*limit);
         xSemaphoreGive(*xCtrlParamMutex);
     }
 }
@@ -73,6 +74,9 @@ void stateHandler(
 void TaskEncHandler(void *pvParameters) // This is a task.
 {
     (void)pvParameters;
+
+    int hotAirLimit = 500;
+    int powerOfAir = 100;
 
     while (1)
     {
@@ -83,15 +87,15 @@ void TaskEncHandler(void *pvParameters) // This is a task.
         }
         else if (encButtonState == 1)
         {
-            stateHandler(&xCtrlTemp1Mutex, &ctrlTemp1, 1);
+            stateHandler(&xCtrlTemp1Mutex, &ctrlTemp1, encButtonState, &hotAirLimit);
         }
         else if (encButtonState == 2)
         {
-            stateHandler(&xCtrlTemp2Mutex, &ctrlTemp2, 2);
+            stateHandler(&xCtrlTemp2Mutex, &ctrlTemp2, encButtonState, &hotAirLimit);
         }
         else if (encButtonState == 3)
         {
-            stateHandler(&xCtrlFanMutex, &ctrlFan, 3);
+            stateHandler(&xCtrlFanMutex, &ctrlFan, encButtonState, &powerOfAir);
         }
 
         xSemaphoreGive(xEncButtonMutex);
