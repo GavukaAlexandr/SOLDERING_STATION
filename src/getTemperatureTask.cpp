@@ -42,6 +42,6 @@ void TaskGetTemperature(void *pvParameters) // This is a task.
         temperature2 = (int)(getByCelsius2());
         xSemaphoreGive(xTemperature2Mutex);
 
-        vTaskDelay(50 / portTICK_PERIOD_MS); // wait for one second
+        vTaskDelay(20 / portTICK_PERIOD_MS); // wait for one second
     }
 }

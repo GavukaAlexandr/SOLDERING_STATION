@@ -30,7 +30,7 @@ void encHandlerTaskInit()
     xTaskCreate(
         TaskEncHandler, (const portCHAR *)"TaskEncHandler" // A name just for humans
         ,
-        96 // This stack size can be checked & adjusted by reading the Stack Highwater
+        110 // This stack size can be checked & adjusted by reading the Stack Highwater
         ,
         NULL, 2 // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
         ,
