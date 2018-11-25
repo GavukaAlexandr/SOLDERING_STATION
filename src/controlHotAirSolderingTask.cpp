@@ -21,7 +21,6 @@ void TaskControlHotAirSoldering(void *pvParameters);
 void controlHotAirSolderingTaskInit()
 {
     pinMode(tempBtnOnPin2, INPUT);
-    // pinMode(powerPin2, OUTPUT);
     pinModeFast(powerPin2, OUTPUT);
     pinModeFast(13, OUTPUT);
 
@@ -41,9 +40,6 @@ void TaskControlHotAirSoldering(void *pvParameters) // This is a task.
 {
     (void)pvParameters;
 
-    ctrlTemp2 = 50;
-    ctrlFan = 15;
-
     while (1)
     {
         xSemaphoreTake(xTemperature2Mutex, (TickType_t)10);
@@ -52,26 +48,18 @@ void TaskControlHotAirSoldering(void *pvParameters) // This is a task.
         int delayAfterOff = 118;
         if (digitalRead(tempBtnOnPin2))
         {
-
             if (ctrlFan < 15)
                 ctrlFan = 20;
-            // Timer1.pwm(fanPin, ((float)ctrlFan / 100) * 1023);
-            // vTaskDelay(300 / portTICK_PERIOD_MS);
             if (temperature2 < ctrlTemp2)
             {
                 digitalWriteFast(powerPin2, HIGH); //on
                 digitalWriteFast(13, HIGH);        //on
 
-                
-               
-               
-                // if (ctrlTemp2 > 399){}
                 if (ctrlTemp2 > 299)
                 {
                     delayAfterOff = 0;
                     if(ctrlFan < 16) delayMicroseconds(300);
-                    if(ctrlFan > 19) /* vTaskDelay(1 / portTICK_PERIOD_MS); */ delayMicroseconds(100);
-                    // if(ctrlFan > 90) delayMicroseconds(600);
+                    if(ctrlFan > 19) delayMicroseconds(100);
                 }
                 else if (ctrlTemp2 > 199)
                 {
@@ -88,7 +76,6 @@ void TaskControlHotAirSoldering(void *pvParameters) // This is a task.
                         delayAfterOff = 10;
                         delayMicroseconds(300);
                     }
-                    // if(ctrlFan > 90) delayMicroseconds(600);
                 }
                 else if (ctrlTemp2 > 90)
                 {
@@ -101,15 +88,12 @@ void TaskControlHotAirSoldering(void *pvParameters) // This is a task.
                 else if (ctrlTemp2 > 49){
                     if(ctrlFan < 16) delayMicroseconds(30);
                     if(ctrlFan > 19) delayMicroseconds(30);
-                    // if(ctrlFan > 30) delayMicroseconds(50);
-                    // if(ctrlFan > 50) delayMicroseconds(30);
-                    // if(ctrlFan > 90) delayMicroseconds(30);
                 }
 
                 digitalWriteFast(powerPin2, LOW); //off
                 digitalWriteFast(13, LOW);        //on
                 if (delayAfterOff) vTaskDelay((int)map(ctrlFan, 0, 100, delayAfterOff, 0) / portTICK_PERIOD_MS);
-                else if (ctrlTemp2 < 350 && !delayAfterOff) vTaskDelay(1 / portTICK_PERIOD_MS); // TODO: use delayMicroseconds
+                else if (ctrlTemp2 < 350 && !delayAfterOff) vTaskDelay(1 / portTICK_PERIOD_MS);
                 else  delayMicroseconds(1500);
             }
 
@@ -134,5 +118,4 @@ void TaskControlHotAirSoldering(void *pvParameters) // This is a task.
         xSemaphoreGive(xCtrlFanMutex);
         xSemaphoreGive(xTemperature2Mutex);
     }
-    // vTaskDelay(50 / portTICK_PERIOD_MS);
 }
